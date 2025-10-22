@@ -1,0 +1,120 @@
+@import "tailwindcss";
+@keyframes float1 {
+  0%   { transform: translateY(0); }
+  50%  { transform: translateY(-8px); }
+  100% { transform: translateY(0); }
+}
+
+@keyframes float2 {
+  0%   { transform: translateY(0); }
+  50%  { transform: translateY(-12px); }
+  100% { transform: translateY(0); }
+}
+
+@keyframes float3 {
+  0%   { transform: translateY(0); }
+  50%  { transform: translateY(-6px); }
+  100% { transform: translateY(0); }
+}
+
+/* More if needed */
+
+.floating1 {
+  animation: float1 3s ease-in-out infinite;
+}
+.floating2 {
+  animation: float2 4s ease-in-out infinite;
+}
+.floating3 {
+  animation: float3 2.5s ease-in-out infinite;
+}
+
+@keyframes float4 {
+  0%   { transform: translateY(0); }
+  50%  { transform: translateY(-9px); }
+  100% { transform: translateY(0); }
+}
+
+@keyframes float5 {
+  0%   { transform: translateY(0); }
+  50%  { transform: translateY(-13px); }
+  100% { transform: translateY(0); }
+}
+
+@keyframes float6 {
+  0%   { transform: translateY(0); }
+  50%  { transform: translateY(-7px); }
+  100% { transform: translateY(0); }
+}
+
+.floating4 {
+  animation: float4 3.5s ease-in-out infinite;
+}
+.floating5 {
+  animation: float5 4.2s ease-in-out infinite;
+}
+.floating6 {
+  animation: float6 2.8s ease-in-out infinite;
+}
+
+@keyframes monkeyWalk {
+  0% {
+    left: -20%;
+  }
+  100% {
+    left: 120%;
+  }
+}
+
+.animate-monkey-walk {
+  animation: monkeyWalk 2s linear forwards;
+}
+html, body, #root {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: visible; /* <- Ensure it's not 'hidden' */
+}
+
+.fade-in-out {
+  opacity: 0;
+  animation: fadeInOut 1.2s ease-in-out forwards;
+}
+
+
+  @keyframes flyAcross {
+          0% {
+            transform: translateX(-300px);
+          }
+          100% {
+            transform: translateX(110vw);
+          }
+        }
+
+        .plane-fly {
+          animation: flyAcross 10s linear infinite;
+        }
+
+        @keyframes fadeInOut {
+  0% {
+    opacity: 0;
+  }
+  15% {
+    opacity: 1;
+  }
+  85% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes fadeInOut {
+  0%, 100% { opacity: 0; }
+  50% { opacity: 1; }
+}
+
+.animate-fade-in-out {
+  animation: fadeInOut 2s ease-in-out infinite;
+}
