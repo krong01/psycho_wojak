@@ -1,28 +1,24 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import bgImage from './assets/background.png';
-import monkey from './assets/monkey.png';
-import monkey2 from './assets/monkey2.png';
+import monkey from './assets/wojak.png';
+import monkey2 from './assets/wojak2.png';
 import imageTitle from './assets/title.png';
 import coverImage from './assets/coverimage.png';
-import tapSound from './assets/monkeysound.mp3'; // <-- Import your mp3 here
+import tapSound from './assets/wojaksound.mp3';
 import Navbar from './Navbar.jsx';
-import { useEffect } from "react";
-import loadingImage from "./assets/coverimage.png"; // Your loading screen image
-import log2 from "./assets/log2.png"
-import log3 from "./assets/log3.png"
-import log4 from './assets/ape2.png'
+import loadingImage from "./assets/coverimage.png";
+import log2 from "./assets/log2.png";
+import log3 from "./assets/log3.png";
+// import log4 from './assets/ape2.png';
 
 function App() {
-  const initialCount = parseInt(localStorage.getItem('tapCount') || '0', 10);
-  const [clickCount, setClickCount] = useState(initialCount);
-  const [isCountAnimating, setIsCountAnimating] = useState(false);
-
   const [showCover, setShowCover] = useState(false);
   const [fadeClass, setFadeClass] = useState('');
   const [showMonkey2, setShowMonkey2] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   const navigate = useNavigate();
 
@@ -34,35 +30,27 @@ function App() {
     }, 1200);
   };
 
-  const handleButtonClick = () => {
-    // Play sound
+  // When clicking the monkey image
+  const handleMonkeyClick = () => {
     const audio = new Audio(tapSound);
+    audio.volume = 0.75; // 75% volume
     audio.play();
 
-    const newCount = clickCount + 1;
-    setClickCount(newCount);
-    localStorage.setItem('tapCount', newCount);
-
-    // Trigger monkey animation
+    // Switch to overlay image
     setShowMonkey2(true);
     setIsAnimating(true);
 
-    // Trigger count animation
-    setIsCountAnimating(true);
-
+    // Keep image + audio for 2.5 seconds
     setTimeout(() => {
-      setIsAnimating(false);
+      audio.pause();
+      audio.currentTime = 0;
       setShowMonkey2(false);
-    }, 200);
-
-    setTimeout(() => {
-      setIsCountAnimating(false);
-    }, 300);
+      setIsAnimating(false);
+    }, 2500);
   };
-  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const imagesToLoad = [bgImage, monkey, monkey2, imageTitle ];
+    const imagesToLoad = [bgImage, monkey, monkey2, imageTitle];
     let loadedCount = 0;
 
     imagesToLoad.forEach((src) => {
@@ -71,25 +59,26 @@ function App() {
       img.onload = () => {
         loadedCount++;
         if (loadedCount === imagesToLoad.length) {
-           setTimeout(() => {
+          setTimeout(() => {
             setIsLoading(false);
-          }, 1000); // 1.5 seconds delay
+          }, 1000);
         }
       };
     });
   }, []);
 
-if (isLoading) {
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-80">
-      <img
-        src={loadingImage}
-        alt="Loading..."
-        className="w-full h-full object-cover fade-in-out"
-      />
-    </div>
-  );
-}
+  if (isLoading) {
+    return (
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-80">
+        <img
+          src={loadingImage}
+          alt="Loading..."
+          className="w-full h-full object-cover fade-in-out"
+        />
+      </div>
+    );
+  }
+
   return (
     <div
       className="h-screen bg-cover bg-center relative"
@@ -107,7 +96,7 @@ if (isLoading) {
 
       <Navbar onNavClick={handleNavClick} />
 
-          {/* Title Image */}
+      {/* Title */}
       <div className="fixed top-[120px] left-1/2 transform -translate-x-1/2 z-20 group">
         <img
           src={imageTitle}
@@ -116,78 +105,41 @@ if (isLoading) {
         />
       </div>
 
-      {/* Monkey section */}
-      <div className="fixed bottom-0 left-1/2 transform -translate-x-1/2 mb-4 w-150 h-auto">
+      {/* Monkey (click to overlay another) */}
+      <div
+        className="fixed bottom-0 left-1/2 transform -translate-x-1/2 mb-4 w-150 h-auto cursor-pointer"
+        onClick={handleMonkeyClick}
+      >
         <img
           src={showMonkey2 ? monkey2 : monkey}
           alt="Monkey"
-          className={`w-full h-auto pointer-events-none transition-transform duration-300 ease-in-out 
+          className={`w-full h-auto transition-transform duration-500 ease-in-out 
             ${isAnimating ? 'scale-110' : 'scale-100'} 
-            ${showMonkey2 ? 'drop-shadow-[0_0_30px_rgba(255,215,0,0.8)]' : ''}`}
+            ${showMonkey2 ? 'drop-shadow-[0_0_40px_rgba(255,255,255,0.9)]' : ''}`} 
+            /* white glow */
         />
       </div>
 
-      {/* Button + Counter container */}
-      <div className="fixed bottom-200 right-100 top-1/2 transform -translate-y-1/2 flex flex-col items-center space-y-4">
-        <button
-          onClick={handleButtonClick}
-          className="bg-yellow-400 text-yellow-900 hover:bg-yellow-500 active:bg-yellow-600 px-12 py-8 rounded-full text-3xl font-bold shadow-xl transition-all duration-200 ease-in-out transform hover:scale-105 active:scale-95"
+      {/* Social Icons */}
+      <div className="fixed top-4 right-6 z-50 flex space-x-4">
+        <a
+          href="https://t.me/PSYCHOmainCTO"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="hover:scale-110 transition-transform duration-300"
         >
-          TAP ME 👆
-        </button>
-
-        <div
-  className={`bg-[rgba(255,215,0,0.7)] text-yellow-900 px-10 py-6 rounded-lg shadow-md border border-yellow-400 text-lg font-bold transition-transform duration-300 ease-in-out ${
-    isCountAnimating ? 'scale-110' : 'scale-100'
-  }`}
->
-  Total Taps: {clickCount}
-</div>
+          <img src={log2} alt="Telegram" className="w-10 h-10" />
+        </a>
+        <a
+          href="https://x.com/i/communities/1980990967051337848"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="hover:scale-110 transition-transform duration-300"
+        >
+          <img src={log3} alt="X" className="w-10 h-10" />
+        </a>
       </div>
-      {/* Social Icons - upper right */}
-<div className="fixed top-4 right-6 z-50 flex space-x-4">
-  {/* Telegram */}
-    <a
-    href="https://ape.store"
-    target="_blank"
-    rel="noopener noreferrer"
-    className="hover:scale-110 transition-transform duration-300"
-  >
-    <img
-      src={log4} // or PNG path
-      alt="Telegram"
-      className="w-15 h-15"
-    />
-  </a>
-  <a
-    href="https://t.me/Trollangutan"
-    target="_blank"
-    rel="noopener noreferrer"
-    className="hover:scale-110 transition-transform duration-300"
-  >
-    <img
-      src={log2} // or PNG path
-      alt="Telegram"
-      className="w-15 h-15"
-    />
-  </a>
-
-  {/* X (Twitter) */}
-  <a
-    href="https://x.com/trollangutan"
-    target="_blank"
-    rel="noopener noreferrer"
-    className="hover:scale-110 transition-transform duration-300"
-  >
-    <img
-      src={log3} // or PNG path
-      alt="X"
-      className="w-15 h-15"
-    />
-  </a>
-</div>
     </div>
-    
   );
 }
 
